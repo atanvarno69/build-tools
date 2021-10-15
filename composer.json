@@ -1,0 +1,39 @@
+{
+  "name": "atanvarno/build-tools",
+  "type": "library",
+  "description": "Build tools for PHP projects",
+  "keywords": [],
+  "homepage": "https://github.com/atanvarno69/build-tools",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "atanvarno69",
+      "homepage": "https://github.com/atanvarno69"
+    }
+  ],
+  "require": {
+    "php": ">=8.0",
+    "ext-simplexml": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.5.10",
+    "squizlabs/php_codesniffer": "^3.6.1",
+    "vimeo/psalm": "^4.10.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Atanvarno\\BuildTools\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Atanvarno\\BuildTools\\Test\\": "tests"
+    }
+  },
+  "bin": [
+    "bin/badge-color",
+    "bin/badge-percent"
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}

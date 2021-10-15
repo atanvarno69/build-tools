@@ -1,0 +1,36 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * @package   atanvarno/build-tools
+ * @copyright 2021 atanvarno.com
+ * @license   https://opensource.org/licenses/MIT The MIT License
+ * @author    atanvarno69 <https://github.com/atanvarno69>
+ */
+
+
+declare(strict_types = 1);
+
+use Atanvarno\BuildTools\Badge\Color;
+
+// Find autoloader
+$locations = [
+    dirname(__FILE__, 2) . '/autoload.php', // root/vendor/bin/badge-percent
+    dirname(__FILE__, 4) . '/autoload.php', // root/vendor/atanvarno/build-tools/bin/badge-percent
+    dirname(__FILE__, 2) . '/vendor/autoload.php', // root/bin/badge-percent
+];
+$included = false;
+foreach ($locations as $filename) {
+    if (file_exists($filename)) {
+        require $filename;
+        $included = true;
+        break;
+    }
+}
+if (!$included) {
+    throw new Exception('Unable to find autoloader');
+}
+
+// Run command
+$command = Color::create();
+$command->execute($argv);

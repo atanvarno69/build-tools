@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="vendor/autoload.php"
+         cacheResult="false"
+         colors="true"
+         verbose="true">
+  <coverage processUncoveredFiles="true" pathCoverage="true">
+    <include>
+      <directory>src</directory>
+    </include>
+    <report>
+      <clover outputFile="build/logs/clover.xml" />
+      <html outputDirectory="build/coverage" />
+      <text outputFile="build/coverage.txt" />
+    </report>
+  </coverage>
+  <testsuites>
+    <testsuite name="atanvarno/build-tools Unit Tests">
+      <directory>tests</directory>
+    </testsuite>
+  </testsuites>
+</phpunit>

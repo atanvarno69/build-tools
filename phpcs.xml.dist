@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<ruleset>
+  <!-- Check only .php files -->
+  <arg name="extensions" value="php" />
+
+  <!-- Directories to be checked -->
+  <file>src</file>
+  <file>tests</file>
+
+  <!-- Include PSR-12 coding standard -->
+  <rule ref="PSR12">
+    <!-- Exclude ugly rules -->
+    <exclude name="PSR12.Files.DeclareStatement.SpaceFoundAfterDirective" />
+    <exclude name="PSR12.Files.DeclareStatement.SpaceFoundBeforeDirectiveValue" />
+  </rule>
+</ruleset>
