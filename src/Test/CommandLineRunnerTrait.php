@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package   Atanvarno/build-tools
  * @copyright 2021 atanvarno.com

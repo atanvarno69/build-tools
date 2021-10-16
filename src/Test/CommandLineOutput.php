@@ -27,7 +27,8 @@ class CommandLineOutput
         protected int $code,
         protected string $stdout = '',
         protected string $stderr = '',
-    ) {}
+    ) {
+    }
 
     /**
      * STDOUT output.

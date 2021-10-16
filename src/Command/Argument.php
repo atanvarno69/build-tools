@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package   Atanvarno/build-tools
  * @copyright 2021 atanvarno.com
@@ -17,7 +18,8 @@ class Argument
     public function __construct(
         protected ?string $name = null,
         protected ?string $description = null,
-    ) {}
+    ) {
+    }
 
     public function getName(): string
     {

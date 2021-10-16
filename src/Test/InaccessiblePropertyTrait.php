@@ -36,7 +36,8 @@ trait InaccessiblePropertyTrait
      *
      * @throws ReflectionException Property does not exist.
      */
-    protected function setInaccessibleProperty(object $object, string $property, mixed $value): void {
+    protected function setInaccessibleProperty(object $object, string $property, mixed $value): void
+    {
         $reflection = new ReflectionClass($object);
         $reflectionProperty = $reflection->getProperty($property);
         $reflectionProperty->setAccessible(true);

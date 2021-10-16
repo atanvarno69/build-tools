@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package   Atanvarno/build-tools
  * @copyright 2021 atanvarno.com
@@ -38,7 +39,7 @@ abstract class Command
     }
 
     /**
-     * @param array $input Use $argv.
+     * @param array<array-key, string> $input Use $argv.
      */
     public function execute(array $input): void
     {
@@ -61,7 +62,7 @@ abstract class Command
             }
             $arguments = array_slice($input, $index);
             $i = 0;
-            foreach($arguments as $value) {
+            foreach ($arguments as $value) {
                 if (!isset($this->arguments[$i])) {
                     break;
                 }
@@ -80,7 +81,7 @@ abstract class Command
     {
         $output = '';
         if ($this->description !== null) {
-            $output .= sprintf('%s%s%s', $this->description, PHP_EOL, PHP_EOL);
+            $output .= sprintf('%s%s%s', $this->wrapText($this->description, 80, 0), PHP_EOL, PHP_EOL);
         }
         $argumentNames = [];
         foreach ($this->arguments as $argument) {
@@ -89,38 +90,54 @@ abstract class Command
         $argumentNames = implode(' ', $argumentNames);
         $output .= sprintf('Usage: %s [options] %s%s%s', $this->name, $argumentNames, PHP_EOL, PHP_EOL);
         $longest = 0;
-        foreach($this->options as $option) {
-            if($option->getLong() !== null) {
-                $length = strlen($option->getLong());
+        foreach ($this->options as $option) {
+            $long = $option->getLong();
+            if ($long !== null) {
+                $length = strlen($long);
                 $longest = $length > $longest ? $length : $longest;
             }
         }
+        $indent = 10 + $longest;
+        $lineLength = 80 - $indent;
         $optionLines = ['Options:'];
         foreach ($this->options as $option) {
             $long = str_pad($option->getLong() ?? '', $longest);
-            if ($option->getShort() !== null && $option->getLong() !== null) {
-                $optionLines[] = sprintf(' -%s | --%s  %s', $option->getShort(), $long, $option->getDescription());
+            $short = $option->getShort();
+            if ($short !== null && $option->getLong() !== null) {
+                $optionLines[] = sprintf(
+                    ' -%s | --%s  %s',
+                    $short,
+                    $long,
+                    $this->wrapText($option->getDescription(), $lineLength, $indent)
+                );
             } elseif ($option->getLong() === null) {
-                $optionLines[] = sprintf(' -%s     %s  %s', $option->getShort(), $long, $option->getDescription());
+                $optionLines[] = sprintf(
+                    ' -%s     %s  %s',
+                    $short ?? '',
+                    $long,
+                    $this->wrapText($option->getDescription(), $lineLength, $indent)
+                );
             } else {
-                $optionLines[] = sprintf('      --%s  %s', $long, $option->getDescription());
+                $optionLines[] = sprintf(
+                    '      --%s  %s',
+                    $long,
+                    $this->wrapText($option->getDescription(), $lineLength, $indent)
+                );
             }
         }
         $output .= implode(PHP_EOL, $optionLines);
         if (!empty($this->arguments)) {
             $longest = 0;
             foreach ($this->arguments as $argument) {
-                if ($argument->getName() !== null) {
-                    $length = strlen($argument->getName());
-                    $longest = $length > $longest ? $length : $longest;
-                }
+                $length = strlen($argument->getName());
+                $longest = $length > $longest ? $length : $longest;
             }
             $argumentLines = ['Arguments:'];
-            foreach($this->arguments as $argument) {
-                $name = str_pad('<' . $argument->getName() ?? '' . '>', $longest);
-                $argumentLines[] = sprintf(' %s  %s', $name, $argument->getDescription() ?? '');
+            foreach ($this->arguments as $argument) {
+                $name = str_pad('<' . $argument->getName() . '>', $longest + 2);
+                $argumentLines[] = sprintf(' %s  %s', $name, $argument->getDescription());
             }
-            $output .= implode(PHP_EOL, $argumentLines);
+            $output .= PHP_EOL . PHP_EOL . implode(PHP_EOL, $argumentLines);
         }
         return $output . PHP_EOL;
     }
@@ -129,8 +146,9 @@ abstract class Command
     {
         $output = '';
         foreach ($this->options as $option) {
-            if ($option->getShort() !== null) {
-                $output .= $option->getShort() . $option->getSuffix();
+            $short = $option->getShort();
+            if ($short !== null) {
+                $output .= $short . $option->getSuffix();
             }
         }
         return $output;
@@ -140,11 +158,37 @@ abstract class Command
     {
         $output = [];
         foreach ($this->options as $option) {
-            if ($option->getLong() !== null) {
-                $output[] = $option->getLong() . $option->getSuffix();
+            $long = $option->getLong();
+            if ($long !== null) {
+                $output[] = $long . $option->getSuffix();
             }
         }
         return $output;
+    }
+
+    private function wrapText(string $input, int $length, int $indent): string
+    {
+        $indentString = str_repeat(' ', $indent);
+        $words = explode(' ', $input);
+        $lines = [];
+        $line = [];
+        $lineLength = 0;
+        foreach ($words as $word) {
+            $wordLength = strlen($word);
+            if ((count($line) - 1) + $lineLength + $wordLength > $length) {
+                $lines[] = implode(' ', $line);
+                $line = [$word];
+                if ($indent > 0) {
+                    array_unshift($line, $indentString);
+                }
+                $lineLength = $wordLength;
+            } else {
+                $line[] = $word;
+                $lineLength += $wordLength;
+            }
+        }
+        $lines[] = implode(' ', $line);
+        return implode(PHP_EOL, $lines);
     }
 
     abstract protected function run(): string;

@@ -44,7 +44,7 @@ trait OptionTrait
 
     public function getId(): string
     {
-        return $this->long ?? $this->short;
+        return $this->long ?? $this->short ?? '';
     }
 
     public function getLong(): ?string

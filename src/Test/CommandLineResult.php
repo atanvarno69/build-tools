@@ -19,7 +19,7 @@ class CommandLineResult
     /**
      * Run a command and capture its outputs.
      */
-    public static function fromCommand(string $command, ?string $arguments = null): static
+    public static function fromCommand(string $command, ?string $arguments = null): self
     {
         if ($arguments !== null && trim($arguments) !== '') {
             $command = implode(' ', [trim($command), trim($arguments)]);
@@ -40,7 +40,7 @@ class CommandLineResult
     /**
      * Set a command output values.
      */
-    public static function fromValues(int $code, string $stdout = '', string $stderr = ''): static
+    public static function fromValues(int $code, string $stdout = '', string $stderr = ''): self
     {
         return new self($code, $stdout, $stderr);
     }
@@ -78,5 +78,6 @@ class CommandLineResult
         protected int $code,
         protected string $stdout,
         protected string $stderr,
-    ) {}
+    ) {
+    }
 }
